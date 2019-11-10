@@ -1,17 +1,17 @@
 fluidPage(
 
-    title = "EU births shiny demo",
+  title = "EU births shiny demo",
 
-    sidebarPanel(
-        'placeholder for input widgets'
-    ),
+  sidebarPanel(
+    "placeholder for input widgets"
+  ),
 
-    mainPanel(
-        tabsetPanel(
-            tabPanel(
-                title = 'table',
-                dataTableOutput("birth_dt")
-            )
-        )
+  mainPanel(
+    tabsetPanel(
+      tabPanel(
+        title = "table",
+        dataTableOutput(outputId = "birth_dt")
+      )
     )
+  )
 )
