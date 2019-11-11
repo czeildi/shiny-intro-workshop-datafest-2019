@@ -13,7 +13,7 @@
 install.packages(c("shiny", "ggplot2", "dplyr"))
 ```
 
-2. Download ZIP and extract or download these 3 files to a directory from [here](https://github.com/czeildi/shiny-intro-workshop-datafest-2019): `server.R`, `ui.R`, `cleaned_birth_data.rds`
+2. Recommended: Download ZIP and extract or download these 2 files to a directory from [here](https://github.com/czeildi/shiny-intro-workshop-datafest-2019): `app.R`, `cleaned_birth_data.rds`
 
 To work in [RStudio](https://rstudio.com/products/rstudio/) is highly recommended, but not necessary.
 
@@ -32,12 +32,11 @@ Run your app, it already shows our raw data with interactive searching.
 
 ## Step 2 - add summary plot
 
-In `ui.R` add a new tab with title `birth summary` containing a `plotOutput` with id `birth_summary_plot`.
+In `ui` add a new tab with title `birth summary` containing a `plotOutput` with id `birth_summary_plot`.
 
-In `server.R` assign a call to `renderPlot` to `output$birth_summary_plot`. To generate the plot, put the following code inside the `renderPlot` function. Do not forget to add `library(ggplot2)` or `library(tidyverse)` to the beginning of your `server.R` file.
+In `server` assign a call to `renderPlot` to `output$birth_summary_plot`. To generate the plot, put the following code inside the `renderPlot` function. Do not forget to add `library(ggplot2)` or `library(tidyverse)` to the beginning of your `pp.R` file.
 
 ```r
-# server.R
 ggplot(
   readRDS("cleaned_birth_data.rds"),
   aes(x = age, y = num_birth, fill = education_level)
@@ -53,10 +52,10 @@ ggplot(
 >It is crucial that the ids are the same in your ui and server:
 
 ```r
-# ui.R
+# ui
 plotOutput("whatever_id_you_type_in_here")
 
-# server.R
+# server
 output$whatever_id_you_type_in_here <- renderPlot({})
 ```
 
@@ -65,12 +64,8 @@ output$whatever_id_you_type_in_here <- renderPlot({})
 you can adjust the relative width of main elements, and also the absolute height of plots:
 
 ```r
-# ui.R
-sidebarPanel(..., width = 2)
-```
-
-```r
-# ui.R
+# ui
+sidebarPanel(..., width = 2),
 plotOutput(..., height = "600px")
 ```
 
@@ -82,10 +77,10 @@ plotOutput(..., height = "600px")
 You can receive user input and use it on the server side with widgets. Examples are [here](https://shiny.rstudio.com/gallery/widget-gallery.html).
 
 **Your turn**: Let's use a slider range for filtering!
-In `ui.R`, create your widget with params:
+In `ui`, create your widget with params:
 
 ```r
-# ui.R
+# ui
 sliderInput(
   inputId = "period", label = "Period to show:",
   min = 2007, max = 2015, value = c(2007, 2015),
@@ -98,7 +93,7 @@ sliderInput(
 Use `dplyr::filter` inside your `renderPlot` function to keep data only within the selected period.
 
 ```r
-# server.R
+# server
 filter(..., year >= input$period[1] & year <= ...)
 ```
 
@@ -138,7 +133,7 @@ We now have a significant amount of repeated code - let's move this to a functio
 This is within our server function, so no need to pass the `input$period` as parameter, it is available already.
 
 ```r
-# server.R
+# server
 filtered_birth_dt <- function() {
   filter(
     readRDS("cleaned_birth_data.rds"),
@@ -152,7 +147,7 @@ Now use this function within `renderPlot` and `renderDataTable` as well.
 To track how many times and with what parameters is this called, let's add a message inside:
 
 ```r
-# server.R
+# server
 filtered_birth_dt <- function() {
   message(
     "filtered birth dt function has been called with ",
@@ -168,7 +163,7 @@ filtered_birth_dt <- function() {
 This is achieved with so called `reactive` expressions in `shiny`. You just have to define your function as a reactive expression and optimal recalculation and caching is automatically taken care of.
 
 ```r
-# server.R
+# server
 filtered_birth_dt <- reactive({
   message(
     "filtered birth dt function has been called with ",
@@ -185,41 +180,6 @@ filtered_birth_dt <- reactive({
 > - a `TRUE/FALSE` value: whether the last calculated value is still up-to-date considering the possible change in dependencies
 
 
-## Optional step 6 - use `global.R` for values available to ui and server as well
-
-Now the endpoints of the period is hardcoded into `ui.R` (2007, 2015) although it comes from the raw data used. Let's read these values from the data in `ui.R`.
-
-```r
-# ui.R
-birth_dt <- readRDS("cleaned_birth_data.rds")
-min_year <- min(birth_dt$year)
-max_year <- max(birth_dt$year)
-
-fluidPage(
-  # ...
-)
-```
-
-```r
-sliderInput(
-  inputId = "period", label = "Period to show:",
-  min = min_year, max = max_year,
-  value = c(min_year, max_year),
-  sep = "", step = 1
-)
-```
-
-Now `readRDS("cleaned_birth_data.rds")` is used in both `server.R` and `ui.R`. For similar precalculations, or settings default values you can use a file named `global.R`.
-
-If there is a file named exactly `global.R` in your folder it will be run before server and ui so you can place these kind of pre calculations there.
-
-```r
-# global.R
-birth_dt <- readRDS("cleaned_birth_data.rds")
-```
-
-**Your turn**: Delete this line from ui and server, use the available birth_dt instead.
-
 ## Optional step 7 - practice filtering based on user input
 
 **Your turn**: Add the option of filtering for an arbitrary subset of countries.
@@ -227,7 +187,7 @@ birth_dt <- readRDS("cleaned_birth_data.rds")
 Hints:
 
 ```r
-# ui.R
+# ui
 checkboxGroupInput(
   inputId = "countries", label = "Countries to show:",
   choices = unique(...),
@@ -236,7 +196,7 @@ checkboxGroupInput(
 ```
 
 ```r
-# server.R
+# server
 filter(
   readRDS("cleaned_birth_data.rds"),
   year >= input$period[1] & year <= input$period[2] &
@@ -257,7 +217,7 @@ filter(
 >However, if your calculation depends on other input values as well you want to stop recalculation if those values change but your user haven't pressed the action button yet. This can be achieved with `isolate`: Although it can contain input values, their change won't trigger a recalculation. But when you press the action button it will recalculate and use the current values of input widgets.
 
 ```r
-# ui.R
+# ui
 actionButton(
   inputId = "recalculate_plot",
   label = "Apply filters on plot!"
@@ -265,7 +225,7 @@ actionButton(
 ```
 
 ```r
-# server.R
+# server
 output$birth_plot <- renderPlot({
 
   input$recalculate_plot
@@ -337,5 +297,6 @@ tabPanel(
 - add a new completely empty tab with some title
 - Show the current value of the period slider with a `textOutput` and `renderText`, in the `sidebarPanel`, below the slider.
 - Add the option of filtering for an arbitrary subset of countries. (Hint: use `checkboxGroupInput`). [Reference here](https://shiny.rstudio.com/gallery/widget-gallery.html)
+- separate `app.R` to `ui.R` and `server.R`, possibly use `global.R`
 - Add a new tab with a plot on ratio of all births by education, regardless of mother's age. (Hint: for aggregating you can use `dplyr::group_by` and `dplyr::summarise`)
 - Create an entirely new shiny app which uses a built-in dataset, e.g. diamonds. Show an arbitrary plot of your choice.
