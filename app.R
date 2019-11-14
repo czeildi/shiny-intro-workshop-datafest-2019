@@ -11,7 +11,11 @@ ui <- fluidPage(
   title = "EU births shiny demo",
 
   sidebarPanel(
-    "placeholder for input widgets",
+    sliderInput(
+      inputId = "period", label = "Period to show:",
+      min = 2007, max = 2015, value = c(2007, 2015),
+      sep = "", step = 1
+    ),
     width = 2
   ),
 
@@ -35,14 +39,16 @@ ui <- fluidPage(
 server <- function(input, output) {
 
   output$birth_dt <- renderDataTable({
-    readRDS("cleaned_birth_data.rds")
+    readRDS("cleaned_birth_data.rds") %>%
+      filter(year >= input$period[1] & year <= input$period[2])
   }, escape = FALSE)
 
   output$birth_summary_plot <- renderPlot({
-    ggplot(
-      readRDS("cleaned_birth_data.rds"),
-      aes(x = age, y = num_birth, fill = education_level)
-    ) +
+    readRDS("cleaned_birth_data.rds") %>%
+      filter(year >= input$period[1] & year <= input$period[2]) %>%
+      ggplot(
+        aes(x = age, y = num_birth, fill = education_level)
+      ) +
       geom_col(position = "dodge") +
       facet_grid(year ~ country) +
       theme(
