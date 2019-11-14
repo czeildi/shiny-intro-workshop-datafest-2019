@@ -11,7 +11,8 @@ ui <- fluidPage(
   title = "EU births shiny demo",
 
   sidebarPanel(
-    "placeholder for input widgets"
+    "placeholder for input widgets",
+    width = 2
   ),
 
   mainPanel(
@@ -22,9 +23,10 @@ ui <- fluidPage(
       ),
       tabPanel(
         title = "birth summary",
-        plotOutput("birth_summary_plot")
+        plotOutput("birth_summary_plot", height = "600")
       )
-    )
+    ),
+    width = 10
   )
 )
 
