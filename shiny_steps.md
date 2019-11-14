@@ -128,28 +128,27 @@ readRDS(...) %>%
 
 We now have a significant amount of repeated code - let's move this to a function!
 
-This is within our server function, so no need to pass the `input$period` as parameter, it is available already.
 
 ```r
 # server
-filtered_birth_dt <- function() {
+filtered_birth_dt <- function(period) {
   filter(
     readRDS("cleaned_birth_data.rds"),
-    year >= input$period[1] & year <= input$period[2]
+    year >= period[1] & year <= period[2]
   )
 }
 ```
 
-Now use this function within `renderPlot` and `renderDataTable` as well.
+Now use this function within `renderPlot` and `renderDataTable` as well like `filtered_birth_dt(input$period)`
 
 To track how many times and with what parameters is this called, let's add a message inside:
 
 ```r
 # server
-filtered_birth_dt <- function() {
+filtered_birth_dt <- function(period) {
   message(
     "filtered birth dt function has been called with ",
-    input$period
+    period
   )
   # ...
 }
@@ -158,7 +157,7 @@ filtered_birth_dt <- function() {
 **Your turn**: Run your app and verify that the function gets called twice upon every change of the slider.
 
 >Imagine this filtering was a somewhat more expensive calculation, or we have more plots using the same data. Then it is important to recalculate if and only if the values of the relevant input widgets change.
-This is achieved with so called `reactive` expressions in `shiny`. You just have to define your function as a reactive expression and optimal recalculation and caching is automatically taken care of.
+This is achieved with so called `reactive` expressions in `shiny`. You just have to define your function as a reactive expression and optimal recalculation and caching is automatically taken care of. Now you do not have to pass `input$period` as an argument because `input` is available to all reactive contexts: reactives and render... functions.
 
 ```r
 # server

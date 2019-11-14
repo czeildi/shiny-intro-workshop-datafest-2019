@@ -23,7 +23,7 @@ ui <- fluidPage(
     tabsetPanel(
       tabPanel(
         title = "table",
-        dataTableOutput(outputId = "birth_dt")
+        DT::dataTableOutput(outputId = "birth_dt")
       ),
       tabPanel(
         title = "birth summary",
@@ -38,14 +38,23 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 
-  output$birth_dt <- renderDataTable({
-    readRDS("cleaned_birth_data.rds") %>%
-      filter(year >= input$period[1] & year <= input$period[2])
-  }, escape = FALSE)
+  filtered_birth_dt <- function(period) {
+    message(
+      "filtered birth dt function has been called with ",
+      period
+    )
+    filter(
+      readRDS("cleaned_birth_data.rds"),
+      year >= period[1] & year <= period[2]
+    )
+  }
+
+  output$birth_dt <- DT::renderDataTable({
+    filtered_birth_dt(input$period)
+  })
 
   output$birth_summary_plot <- renderPlot({
-    readRDS("cleaned_birth_data.rds") %>%
-      filter(year >= input$period[1] & year <= input$period[2]) %>%
+    filtered_birth_dt(input$period) %>%
       ggplot(
         aes(x = age, y = num_birth, fill = education_level)
       ) +
