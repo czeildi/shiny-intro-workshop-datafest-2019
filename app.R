@@ -38,23 +38,23 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 
-  filtered_birth_dt <- function(period) {
+  filtered_birth_dt <- reactive({
     message(
       "filtered birth dt function has been called with ",
-      period
+      input$period
     )
     filter(
       readRDS("cleaned_birth_data.rds"),
-      year >= period[1] & year <= period[2]
+      year >= input$period[1] & year <= input$period[2]
     )
-  }
+  })
 
   output$birth_dt <- DT::renderDataTable({
-    filtered_birth_dt(input$period)
+    filtered_birth_dt()
   })
 
   output$birth_summary_plot <- renderPlot({
-    filtered_birth_dt(input$period) %>%
+    filtered_birth_dt() %>%
       ggplot(
         aes(x = age, y = num_birth, fill = education_level)
       ) +
