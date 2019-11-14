@@ -2,7 +2,7 @@
 
 library("shiny")
 # library("ggplot2")
-library("dplyr")
+suppressPackageStartupMessages(library("dplyr"))
 
 # UI ----------------------------------------------------------------------
 
