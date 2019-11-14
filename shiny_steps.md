@@ -177,7 +177,7 @@ filtered_birth_dt <- reactive({
 > - a `TRUE/FALSE` value: whether the last calculated value is still up-to-date considering the possible change in dependencies
 
 
-## Optional step 7 - practice filtering based on user input
+## Optional step 6 - practice filtering based on user input
 
 **Your turn**: Add the option of filtering for an arbitrary subset of countries.
 
@@ -203,7 +203,7 @@ filter(
 
 >Notice that now that we use the same reactive expression for rendering the table and the plot as well, this new filter gets applied to both of them.
 
-## Step 8 - control execution with action buttons
+## Step 7 - control execution with action buttons
 
 >By default a recalculation will happen every time a value of any input widget changes. It means 4 recalculations if you decide you want to focus on only one country but have to uncheck 4 checkboxes one by one. This recalculation is quite fast with this amount of data but the rendering of the plot already takes up a noticable amount of time.
 
@@ -254,6 +254,14 @@ output$birth_plot <- renderPlot({
 
 ## Optional assignments to work on at home
 
+_This assignments are in an approximate order of increasing difficulty._
+
+- add a new completely empty tab with some title
+- use a different `id` for the shown table. check if the app is still working
+- Show the current value of the period slider with a `textOutput` and `renderText`, in the `sidebarPanel`, below the slider.
+- use `tableOutput` and `renderTable` instead of `dataTableOutput` and `renderDataTable`. What is the difference?
+- Add the option of filtering for an arbitrary subset of countries. (Hint: use `checkboxGroupInput`). [Reference here](https://shiny.rstudio.com/gallery/widget-gallery.html)
+- separate `app.R` to `ui.R` and `server.R`, possibly use `global.R`
 
 **Q**: add a new tab with a plot on ratio of all births by education, regardless of mother's age.
 
@@ -289,11 +297,4 @@ tabPanel(
 
 *Hint*: use `selectInput(..., choices = c('min', 'max', 'mean', 'median'))` to control the shown metric.
 
-- use a different `id` for the shown table. check if the app is still working
-- use `tableOutput` and `renderTable` instead of `dataTableOutput` and `renderDataTable`. What is the difference?
-- add a new completely empty tab with some title
-- Show the current value of the period slider with a `textOutput` and `renderText`, in the `sidebarPanel`, below the slider.
-- Add the option of filtering for an arbitrary subset of countries. (Hint: use `checkboxGroupInput`). [Reference here](https://shiny.rstudio.com/gallery/widget-gallery.html)
-- separate `app.R` to `ui.R` and `server.R`, possibly use `global.R`
-- Add a new tab with a plot on ratio of all births by education, regardless of mother's age. (Hint: for aggregating you can use `dplyr::group_by` and `dplyr::summarise`)
 - Create an entirely new shiny app which uses a built-in dataset, e.g. diamonds. Show an arbitrary plot of your choice.
