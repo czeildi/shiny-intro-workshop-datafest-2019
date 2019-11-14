@@ -23,8 +23,6 @@ At any point to run your app, either press the green run App button in RStudio, 
 
 Run your app, it already shows our raw data with interactive searching.
 
->The ui part is about what type of components to show in what layout, and the server is about what to show.
-
 >The ui tells us what type of inputs and outputs has to be shown in what layout, and contains static content not depending on data or calculation: e.g. labels, menu bars, etc. The layout is based on a 12 wide rectangular grid system.
 
 >The server is responsible for calculations and filling the input and output containers in the ui with actual content.
