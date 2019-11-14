@@ -32,7 +32,7 @@ Run your app, it already shows our raw data with interactive searching.
 
 In `ui` add a new tab with title `birth summary` containing a `plotOutput` with id `birth_summary_plot`.
 
-In `server` assign a call to `renderPlot` to `output$birth_summary_plot`. To generate the plot, put the following code inside the `renderPlot` function. Do not forget to add `library(ggplot2)` or `library(tidyverse)` to the beginning of your `pp.R` file.
+In `server` assign a call to `renderPlot` to `output$birth_summary_plot`. To generate the plot, put the following code inside the `renderPlot` function. Do not forget to add `library(ggplot2)` or `library(tidyverse)` to the beginning of your `app.R` file.
 
 ```r
 ggplot(
