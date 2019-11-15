@@ -1,5 +1,7 @@
 # global ------------------------------------------------------------------
 
+# install.packages(c("shiny", "dplyr", "ggplot2", "DT"))
+
 library("shiny")
 # library("ggplot2")
 suppressPackageStartupMessages(library("dplyr"))
